@@ -1,15 +1,16 @@
 ﻿using MediatR;
+using MyMovieScore.Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyMovieScore.Application.Commands.DeleteMovie
+namespace MyMovieScore.Application.Queries.GetMovieById
 {
-    public class DeleteMovieCommand : IRequest<Unit>
+    public class GetMovieByIdQuery : IRequest<MovieViewModel>
     {
-        public DeleteMovieCommand(int id)
+        public GetMovieByIdQuery(int id)
         {
             Id = id;
         }

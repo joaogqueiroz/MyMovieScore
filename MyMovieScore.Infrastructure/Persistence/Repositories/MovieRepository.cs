@@ -37,5 +37,10 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
             _dbContext.Movies.Remove(movie);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<Movie> GetByIdAsync(int id)
+        {
+            return await _dbContext.Movies.SingleOrDefaultAsync(u => u.Id == id);
+        }
     }
 }
