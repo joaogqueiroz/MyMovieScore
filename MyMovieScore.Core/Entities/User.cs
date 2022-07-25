@@ -18,5 +18,7 @@ namespace MyMovieScore.Core.Entities
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Name { get; private set; }
+        public List<Movie> Movies { get; private set; }
+
     }
 }

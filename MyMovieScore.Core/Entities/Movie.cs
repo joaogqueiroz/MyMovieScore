@@ -22,6 +22,7 @@ namespace MyMovieScore.Core.Entities
 
         public string IdIMDb { get; private set; }
         public int UserId { get; private set; }
+        public User User { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
         public DateTime ReleaseDate { get; private set; }
