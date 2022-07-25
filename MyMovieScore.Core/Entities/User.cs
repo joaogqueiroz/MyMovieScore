@@ -8,6 +8,13 @@ namespace MyMovieScore.Core.Entities
 {
     public class User : BaseEntity
     {
+        public User(string email, string password, string name)
+        {
+            Email = email;
+            Password = password;
+            Name = name;
+        }
+
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Name { get; private set; }
