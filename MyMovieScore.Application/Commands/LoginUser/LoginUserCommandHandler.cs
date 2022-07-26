@@ -18,12 +18,12 @@ namespace MyMovieScore.Application.Commands.LoginUser
         {
             _authService = authService;
 
-            _userRepository = _userRepository;
+            _userRepository = userRepository;
         }
         public async Task<LoginUserViewModel> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
             // Using algorithm to create a hash password
-            var passwordHash = _authService.ComputeSha256Hash(request.Senha);
+            var passwordHash = _authService.ComputeSha256Hash(request.Password);
             // Searching user and hashpassword in DB 
             var user = await _userRepository.GetUserByLoginAndPasswordAsync(request.Email, passwordHash);
             // if don't exists, login error

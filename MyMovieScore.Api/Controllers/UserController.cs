@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyMovieScore.Application.Commands.CreateUser;
+using MyMovieScore.Application.Commands.LoginUser;
 using MyMovieScore.Application.Queries.GetUserById;
 
 namespace MyMovieScore.Api.Controllers
@@ -36,6 +37,19 @@ namespace MyMovieScore.Api.Controllers
         {
             var id = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id = id }, command);
+        }
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
+        {
+            var loginUserViewModel = await _mediator.Send(command);
+
+            if (loginUserViewModel == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(loginUserViewModel);
         }
     }
 }
