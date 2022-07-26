@@ -10,6 +10,7 @@ using MyMovieScore.Application.Validators;
 using MyMovieScore.Core.Repositories;
 using MyMovieScore.Core.Services;
 using MyMovieScore.Infrastructure.Auth;
+using MyMovieScore.Infrastructure.ExternalServices;
 using MyMovieScore.Infrastructure.Persistence;
 using MyMovieScore.Infrastructure.Persistence.Repositories;
 using System.Text;
@@ -25,6 +26,7 @@ builder.Services.AddControllers(options => options.Filters.Add(typeof(Validation
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateUserCommandValidator>());
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IIMDbExternalService, IMDbExternalService>();
 builder.Services.AddMediatR(typeof(CreateMovieCommand));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
