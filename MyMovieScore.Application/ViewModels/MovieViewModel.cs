@@ -8,7 +8,7 @@ namespace MyMovieScore.Application.ViewModels
 {
     public class MovieViewModel
     {
-        public MovieViewModel(string id, string idIMDb, int userId, string name, string description, DateTime releaseDate, string genre, bool watched, float userScore)
+        public MovieViewModel(int id, string idIMDb, int userId, string name, string description, DateTime releaseDate, string genre, bool watched, float userScore)
         {
             Id = id;
             IdIMDb = idIMDb;
@@ -21,7 +21,7 @@ namespace MyMovieScore.Application.ViewModels
             UserScore = userScore;
         }
 
-        public string Id { get; private set; }
+        public int Id { get; private set; }
         public string IdIMDb { get; private set; }
         public int UserId { get; private set; }
         public string Name { get; private set; }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Infrastructure.Persistence.Configurations
 {
-    internal class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {

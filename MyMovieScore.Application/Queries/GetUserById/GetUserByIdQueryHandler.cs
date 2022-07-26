@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using MyMovieScore.Application.ViewModels;
+using MyMovieScore.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,23 @@ namespace MyMovieScore.Application.Queries.GetUserById
 {
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserViewModel>
     {
-        public GetUserByIdQueryHandler()
-        {
+        private readonly IUserRepository _userRepository;
 
+        public GetUserByIdQueryHandler(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
         }
         public async Task<UserViewModel> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(request.Id);
+            if (user == null) return null;
+            var userViewModel = new UserViewModel
+                (
+                user.Id,
+                user.Name,
+                user.Email
+                );
+            return userViewModel;
         }
     }
 }
