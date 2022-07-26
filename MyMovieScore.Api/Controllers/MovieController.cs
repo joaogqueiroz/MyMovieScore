@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyMovieScore.Application.Commands.CreateMovie;
@@ -11,6 +12,7 @@ namespace MyMovieScore.Api.Controllers
 {
     [Route("api/movie")]
     [ApiController]
+    [Authorize]
     public class MovieController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -31,12 +33,12 @@ namespace MyMovieScore.Api.Controllers
         public async Task<IActionResult> GetById(int Id)
         {
             var query = new GetMovieByIdQuery(Id);
-            var oficina = await _mediator.Send(query);
-            if (oficina == null)
+            var movie = await _mediator.Send(query);
+            if (movie == null)
             {
                 return NotFound();
             }
-            return Ok(oficina);
+            return Ok(movie);
         }
 
         [HttpPost]

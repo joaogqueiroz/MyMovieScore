@@ -28,9 +28,9 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
                                .SingleOrDefaultAsync(u => u.Email == email && u.Password == passwordHash);
         }
 
-        public async Task AddAsync(User usuario)
+        public async Task AddAsync(User user)
         {
-            await _dbContext.Users.AddAsync(usuario);
+            await _dbContext.Users.AddAsync(user);
             _dbContext.SaveChanges();
         }
     }
