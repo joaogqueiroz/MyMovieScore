@@ -11,6 +11,6 @@ namespace MyMovieScore.Core.Repositories
     {
         Task<User> GetByIdAsync(int id);
         Task<User> GetUserByLoginAndPasswordAsync(string email, string passwordHash);
-        Task AddAsync(User usuario);
+        Task AddAsync(User user);
     }
 }

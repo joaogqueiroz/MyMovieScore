@@ -31,12 +31,12 @@ namespace MyMovieScore.Api.Controllers
         public async Task<IActionResult> GetById(int Id)
         {
             var query = new GetMovieByIdQuery(Id);
-            var oficina = await _mediator.Send(query);
-            if (oficina == null)
+            var movie = await _mediator.Send(query);
+            if (movie == null)
             {
                 return NotFound();
             }
-            return Ok(oficina);
+            return Ok(movie);
         }
 
         [HttpPost]
