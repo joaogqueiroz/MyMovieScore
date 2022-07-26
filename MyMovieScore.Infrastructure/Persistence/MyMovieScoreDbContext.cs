@@ -17,6 +17,7 @@ namespace MyMovieScore.Infrastructure.Persistence
 
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<ExternalRatings> ExternalRatings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

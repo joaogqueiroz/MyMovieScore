@@ -29,7 +29,8 @@ namespace MyMovieScore.Api.Controllers
 
             return Ok(getAllMovies);
         }
-        [HttpGet("{id}")]
+
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetById(int Id)
         {
             var query = new GetMovieByIdQuery(Id);

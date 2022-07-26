@@ -40,7 +40,7 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
 
         public async Task<Movie> GetByIdAsync(int id)
         {
-            return await _dbContext.Movies.SingleOrDefaultAsync(u => u.Id == id);
+            return await _dbContext.Movies.SingleOrDefaultAsync(m => m.Id == id);
         }
     }
 }

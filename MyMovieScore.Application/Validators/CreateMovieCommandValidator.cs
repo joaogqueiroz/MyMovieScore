@@ -23,14 +23,13 @@ namespace MyMovieScore.Application.Validators
                 .WithMessage("Should have IMDb ID");
 
             RuleFor(m => m.Watched)
-                .NotEmpty()
                 .NotNull()
                 .WithMessage("Should inform if was watched");
 
             RuleFor(m => m.UserScore)
                 .GreaterThanOrEqualTo(0)
                 .LessThanOrEqualTo(10)
-                .WithMessage("Should inform if was watched");
+                .WithMessage("Should hava a note between 0 to 10");
 
         }
     }

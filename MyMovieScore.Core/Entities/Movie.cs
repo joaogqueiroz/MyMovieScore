@@ -8,7 +8,7 @@ namespace MyMovieScore.Core.Entities
 {
     public class Movie : BaseEntity
     {
-        public Movie(string idIMDb, int userId, string name, string description, DateTime releaseDate, string genre, bool watched, float userScore)
+        public Movie(string idIMDb, int userId, string name, string description, string releaseDate, string genre, bool watched, float userScore)
         {
             IdIMDb = idIMDb;
             UserId = userId;
@@ -18,6 +18,8 @@ namespace MyMovieScore.Core.Entities
             Genre = genre;
             Watched = watched;
             UserScore = userScore;
+            ExternalRatings = new List<ExternalRatings>();
+
         }
 
         public string IdIMDb { get; private set; }
@@ -25,14 +27,20 @@ namespace MyMovieScore.Core.Entities
         public User User { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public DateTime ReleaseDate { get; private set; }
+        public string ReleaseDate { get; private set; }
         public string Genre { get; private set; }
         public bool Watched { get; private set; }
         public float UserScore { get; private set; }
+        public List<ExternalRatings> ExternalRatings { get; private set; }
         public void Update(bool watched, float userScore)
         {
             Watched = watched;
             UserScore = userScore;
+        }
+
+        public void AddExternalRatings(ExternalRatings externalRatings)
+        {
+            ExternalRatings.Add(externalRatings);
         }
     }
 }

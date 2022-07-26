@@ -18,7 +18,6 @@ namespace MyMovieScore.Application.Validators
                 .WithMessage("Should have ID");
 
             RuleFor(m => m.Watched)
-                .NotEmpty()
                 .NotNull()
                 .WithMessage("Should inform if was watched");
 
