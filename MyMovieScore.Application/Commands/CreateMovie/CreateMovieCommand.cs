@@ -9,6 +9,7 @@ namespace MyMovieScore.Application.Commands.CreateMovie
 {
     public class CreateMovieCommand : IRequest<int>
     {
+        public int UserId { get; set; }
         public string IdIMDb { get; set; }
         public bool Watched { get; set; }
         public float UserScore { get; set; }

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyMovieScore.Application.Commands.CreateMovie;
@@ -11,6 +12,7 @@ namespace MyMovieScore.Api.Controllers
 {
     [Route("api/movie")]
     [ApiController]
+    [Authorize]
     public class MovieController : ControllerBase
     {
         private readonly IMediator _mediator;
