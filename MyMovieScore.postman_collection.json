@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "58c03912-5370-4b19-9f76-195dc8d03400",
+		"name": "MyMovieScore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Movie",
+			"item": [
+				{
+					"name": "get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImpvYW9naWxiZXJ0bzM1MEBob3RtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNsaWVudGUiLCJleHAiOjE2NTU3NjkzMTMsImlzcyI6Ik9maWNpbmEiLCJhdWQiOiJDbGllbnRPZmljaW5hIn0.-VcPVIGXHcl8Vo8CpU0vnXs3j0CZbni2gV0eNYbOn_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7130/api/movie",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImpvYW9naWxiZXJ0bzM1MEBob3RtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNsaWVudGUiLCJleHAiOjE2NTU3NjkzMTMsImlzcyI6Ik9maWNpbmEiLCJhdWQiOiJDbGllbnRPZmljaW5hIn0.-VcPVIGXHcl8Vo8CpU0vnXs3j0CZbni2gV0eNYbOn_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7130/api/movie/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"movie",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImpvYW9naWxiZXJ0bzM1MEBob3RtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNsaWVudGUiLCJleHAiOjE2NTU3NjkzMTMsImlzcyI6Ik9maWNpbmEiLCJhdWQiOiJDbGllbnRPZmljaW5hIn0.-VcPVIGXHcl8Vo8CpU0vnXs3j0CZbni2gV0eNYbOn_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": 0,\r\n  \"idIMDb\": \"string\",\r\n  \"watched\": true,\r\n  \"userScore\": 0\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7130/api/movie",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "put",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"watched\": true,\r\n  \"userScore\": 0\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7130/api/movie?id=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"movie"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImpvYW9naWxiZXJ0bzM1MEBob3RtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNsaWVudGUiLCJleHAiOjE2NTU3NjkzMTMsImlzcyI6Ik9maWNpbmEiLCJhdWQiOiJDbGllbnRPZmljaW5hIn0.-VcPVIGXHcl8Vo8CpU0vnXs3j0CZbni2gV0eNYbOn_M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7130/api/movie?Id=1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"movie"
+							],
+							"query": [
+								{
+									"key": "Id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"string\",\r\n  \"password\": \"string\"\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:7130/api/user/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7130/api/user/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7130",
+							"path": [
+								"api",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
