@@ -33,6 +33,7 @@ services:
       - mymoviescoreNet   
     ports:
      - "5000:80"
+     - "5001:443"
     environment:
       - DBHOST=sqlserver
     depends_on:
