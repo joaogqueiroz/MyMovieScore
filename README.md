@@ -100,7 +100,14 @@ DELETE
 ```
 
 # Utilização
-Para melhor visualizar os exemplos acima, importe o arquivo(MyMovieScore.postman_collection) no postman.
+Para melhor utilização deste projeto recomenda-se a utilização do docker que ira instalar os containers com as dependencias necessarias, para isso instale o [docker](https://docs.docker.com/desktop/install/windows-install/) (pode ser necessario a instalação do WSL2 para windows).
+Após isso utilizar o comando:
+
+```
+docker compose up -d
+```
+
+Para melhor visualizar os exemplos das funcionalidades acima, importe o arquivo(MyMovieScore.postman_collection) no postman.
 
 
 
