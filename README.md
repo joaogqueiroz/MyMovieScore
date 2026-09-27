@@ -1,113 +1,50 @@
-# My Movie Score
+# MyMovieScore
 
+A REST API where people sign up, save movies to a personal list and rate them. When a movie is added by its IMDb id, the API looks it up in the [OMDb API](https://www.omdbapi.com/) and stores its title, plot, release date, genre and external ratings.
 
-# Resumo do projeto
+Built with ASP.NET Core 6 using CQRS with MediatR and a clean-architecture layout.
 
-Este projeto tem como intuito, desenvolver uma aplicação onde o usuario possa se registar e salvar filmes em sua lista, para que possa avaliar POSTeriormente.
-
-Tecnologias empregadas nessa aplicação foram:
-
-- .NET Core 6.0
-- c#
-- Ef Core
-- SQL Server
-- MediatR
-- CQRS
-- Fluent Validation
-- Padrão Repository
-
-## 🔨 Funcionalidades do projeto
-
-- `Funcionalidade 1` `Cadastro de usuario`: Possui a responsabilidade de criar um usuario e criptografar sua senha.
-
-**Para criar um usuario:**
-```
-POST
-/api/user
-
-{
-  "email": "string",
-  "password": "string",
-  "name": "string"
-}
-```
-
-- `Funcionalidade 2` `Consultar de usuario por id`: Possui a responsabilidade de consultar o usuario por id.
-
-**Para consultar um usuario:**
-```
-GET
-/api/user/{id}
-{
-  "email": "string",
-  "password": "string",
-  "name": "string"
-}
-```
-- `Funcionalidade 3` `Login`: Possui a responsabilidade autenticar os dados informados e gerar um bearer token com JWT para que o usuario possa utilizar nas requisições em relação ao filme.
-
-**Para logar um usuario:**
-```
-POST
-/api/user/login
-
-{
-  "email": "string",
-  "password": "string",
-}
-```
-- `Funcionalidade 4` `Cadastar filmes`: Possui a responsabilidade cadastar os filmes que o usuario pretende avaliar.
-
-**Para cadastrar um filme:**
-```
-POST
-/api/user/movie
-
-{
-  "userId": 0,
-  "idIMDb": "string",
-  "watched": true,
-  "userScore": 0
-}
-```
-- `Funcionalidade 5` `consultar filmes`: Possui a responsabilidade de consultar os filmes cadastrados.
-
-**Para consultar os filmes:**
-```
-GET
-/api/user/movie
-```
-- `Funcionalidade 6` `consultar filme por id`: Possui a responsabilidade de consultar um filme especifico pelo seu ID.
-
-**Para consultar os filmes:**
-```
-GET
-/api/user/movie/{id}
-```
-- `Funcionalidade 7` `Atualizar filme por id`: Possui a responsabilidade de atualizar um filme especifico pelo seu ID.
-
-**Para atualizar um filme:**
-```
-PUT
-/api/user/movie
-```
-- `Funcionalidade 7` `Deletar filme por id`: Possui a responsabilidade de deletar um filme especifico pelo seu ID.
-
-**Para deletar um filme por id:**
-```
-DELETE
-/api/user/movie
-```
-
-# Utilização
-Para melhor utilização deste projeto recomenda-se a utilização do docker que ira instalar os containers com as dependencias necessarias, para isso instale o [docker](https://docs.docker.com/desktop/install/windows-install/) (pode ser necessario a instalação do WSL2 para windows).
-Após isso utilizar o comando:
+## Architecture
 
 ```
-docker compose up -d
+MyMovieScore.Api             Controllers, JWT auth, Swagger, validation filter
+MyMovieScore.Application     Commands, queries and handlers (MediatR), FluentValidation validators, view models
+MyMovieScore.Core            Entities, DTOs, repository and service interfaces
+MyMovieScore.Infrastructure  EF Core DbContext and migrations, repositories, JWT token service, OMDb client
 ```
 
-Para melhor visualizar os exemplos das funcionalidades acima, importe o arquivo(MyMovieScore.postman_collection) no postman.
+- **CQRS:** every write is a command (`CreateUser`, `LoginUser`, `CreateMovie`, `UpdateMovie`, `DeleteMovie`) and every read is a query, each with its own handler.
+- **Auth:** JWT bearer tokens; the movie endpoints require a token.
+- **External data:** `IMDbExternalService` fetches movie details and ratings from OMDb when a movie is created.
+- **Migrations:** pending EF Core migrations are applied automatically on startup.
 
+## Endpoints
 
+| Method | Route | Auth | Body or parameters |
+| --- | --- | --- | --- |
+| POST | `/api/user` | | `{ "email", "password", "name" }` |
+| POST | `/api/user/login` | | `{ "email", "password" }` → returns a JWT |
+| GET | `/api/user/{id}` | | |
+| POST | `/api/movie` | token | `{ "userId", "idIMDb", "watched", "userScore" }`, e.g. `"idIMDb": "tt0111161"` |
+| GET | `/api/movie` | token | |
+| GET | `/api/movie/{id}` | token | |
+| PUT | `/api/movie` | token | `{ "id", "watched", "userScore" }` |
+| DELETE | `/api/movie?id={id}` | token | |
 
+Swagger UI is available at `/swagger`. The `MyMovieScore.postman_collection.json` file has ready-made requests for Postman.
+
+## Tech stack
+
+C# · .NET 6 · ASP.NET Core · Entity Framework Core · SQL Server · MediatR · FluentValidation · JWT · OMDb API · Swagger · Docker Compose
+
+## Running locally
+
+Requirements: Docker.
+
+```sh
+docker compose up -d --build
+```
+
+This starts SQL Server and the API, applies the migrations and serves the API at http://localhost:5000 (Swagger at http://localhost:5000/swagger).
+
+The OMDb API key is read from `ExternalService:Key` in `MyMovieScore.Api/appsettings.json`. You can get a free key at https://www.omdbapi.com/apikey.aspx.
