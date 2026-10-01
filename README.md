@@ -1,5 +1,7 @@
 # MyMovieScore
 
+[![CI](https://github.com/joaogqueiroz/MyMovieScore/actions/workflows/ci.yml/badge.svg)](https://github.com/joaogqueiroz/MyMovieScore/actions/workflows/ci.yml)
+
 A REST API where people sign up, save movies to a personal list and rate them. When a movie is added by its IMDb id, the API looks it up in the [OMDb API](https://www.omdbapi.com/) and stores its title, plot, release date, genre and external ratings.
 
 Built with ASP.NET Core 6 using CQRS with MediatR and a clean-architecture layout.
