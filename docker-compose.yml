@@ -36,6 +36,7 @@ services:
      - "5001:443"
     environment:
       - ConnectionStrings__MyMovieScoreCs=Server=sqlserver,1433;Database=MyMovieScore;User ID=sa;Password=numsey#2021;TrustServerCertificate=True
+      - ExternalService__Key=${OMDB_API_KEY}
     depends_on:
       - sqlserver
     restart: on-failure

@@ -24,6 +24,10 @@ namespace MyMovieScore.Infrastructure.ExternalServices
         public async Task<Movie> GetByIMDbIdAsync(string idIMDb)
         {
             var value = _configuration.GetSection("ExternalService")["Key"];
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new InvalidOperationException("The OMDb API key is not configured. Set ExternalService:Key.");
+            }
 
 
             HttpClient client = new HttpClient { BaseAddress = new Uri("http://www.omdbapi.com") };

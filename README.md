@@ -41,9 +41,10 @@ C# · .NET 8 · ASP.NET Core · Entity Framework Core · SQL Server · MediatR �
 
 ## Running locally
 
-Requirements: Docker.
+Requirements: Docker and a free OMDb API key from https://www.omdbapi.com/apikey.aspx.
 
 ```sh
+cp .env.example .env   # then put your OMDb key in .env
 docker compose up -d --build
 ```
 
@@ -51,4 +52,8 @@ This starts SQL Server and the API, applies the migrations and serves the API at
 
 To run the API with `dotnet run` instead, start only the database with `docker compose up -d sqlserver`. The connection string in `appsettings.json` points to `localhost,1433`.
 
-The OMDb API key is read from `ExternalService:Key` in `MyMovieScore.Api/appsettings.json`. You can get a free key at https://www.omdbapi.com/apikey.aspx.
+The API reads the OMDb key from `ExternalService:Key`, which is empty in `appsettings.json`. Docker Compose fills it from `OMDB_API_KEY` in `.env`, which git ignores. With `dotnet run`, set it as a user secret:
+
+```sh
+dotnet user-secrets set "ExternalService:Key" "<your-key>" --project MyMovieScore.Api
+```
