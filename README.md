@@ -4,7 +4,7 @@
 
 A REST API where people sign up, save movies to a personal list and rate them. When a movie is added by its IMDb id, the API looks it up in the [OMDb API](https://www.omdbapi.com/) and stores its title, plot, release date, genre and external ratings.
 
-Built with ASP.NET Core 6 using CQRS with MediatR and a clean-architecture layout.
+Built with ASP.NET Core 8 using CQRS with MediatR and a clean-architecture layout.
 
 ## Architecture
 
@@ -37,7 +37,7 @@ Swagger UI is available at `/swagger`. The `MyMovieScore.postman_collection.json
 
 ## Tech stack
 
-C# · .NET 6 · ASP.NET Core · Entity Framework Core · SQL Server · MediatR · FluentValidation · JWT · OMDb API · Swagger · Docker Compose
+C# · .NET 8 · ASP.NET Core · Entity Framework Core · SQL Server · MediatR · FluentValidation · JWT · OMDb API · Swagger · Docker Compose
 
 ## Running locally
 
