@@ -2,6 +2,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyMovieScore.Api.Filters;
@@ -25,8 +26,15 @@ builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddControllers(options => options.Filters.Add(typeof(ValidationFilter)))
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateUserCommandValidator>());
 
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
+builder.Services.Configure<ExternalServiceOptions>(builder.Configuration.GetSection(ExternalServiceOptions.SectionName));
+
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IIMDbExternalService, IMDbExternalService>();
+builder.Services.AddHttpClient<IIMDbExternalService, IMDbExternalService>((serviceProvider, client) =>
+{
+  var options = serviceProvider.GetRequiredService<IOptions<ExternalServiceOptions>>().Value;
+  client.BaseAddress = new Uri(options.BaseUrl);
+});
 builder.Services.AddMediatR(typeof(CreateMovieCommand));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,6 +68,7 @@ builder.Services.AddSwaggerGen(c =>
                      }
                  });
 });
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
 builder.Services
   .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(options =>
@@ -71,16 +80,16 @@ builder.Services
       ValidateLifetime = true,
       ValidateIssuerSigningKey = true,
 
-      ValidIssuer = builder.Configuration["Jwt:Issuer"],
-      ValidAudience = builder.Configuration["Jwt:Audience"],
+      ValidIssuer = jwtOptions.Issuer,
+      ValidAudience = jwtOptions.Audience,
       IssuerSigningKey = new SymmetricSecurityKey
-                  (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                  (Encoding.UTF8.GetBytes(jwtOptions.Key))
     };
   });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
   app.UseSwagger();
   app.UseSwaggerUI();
@@ -91,8 +100,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-using (var scope = app.Services.CreateScope())
+if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
 {
+  using var scope = app.Services.CreateScope();
   var services = scope.ServiceProvider;
 
   var context = services.GetRequiredService<MyMovieScoreDbContext>();

@@ -8,30 +8,30 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using MyMovieScore.Core.DTOs;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MyMovieScore.Infrastructure.ExternalServices
 {
     public class IMDbExternalService : IIMDbExternalService
     {
-        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
+        private readonly ExternalServiceOptions _options;
 
-        public IMDbExternalService(IConfiguration configuration)
+        // HttpClient comes from IHttpClientFactory, with BaseAddress set from ExternalService:BaseUrl
+        public IMDbExternalService(HttpClient httpClient, IOptions<ExternalServiceOptions> options)
         {
-            _configuration = configuration;
+            _httpClient = httpClient;
+            _options = options.Value;
         }
 
         public async Task<Movie> GetByIMDbIdAsync(string idIMDb)
         {
-            var value = _configuration.GetSection("ExternalService")["Key"];
-            if (string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(_options.Key))
             {
                 throw new InvalidOperationException("The OMDb API key is not configured. Set ExternalService:Key.");
             }
 
-
-            HttpClient client = new HttpClient { BaseAddress = new Uri("http://www.omdbapi.com") };
-            var response = await client.GetAsync($"?i={idIMDb}&apikey={value}&plot=full");
+            var response = await _httpClient.GetAsync($"?i={idIMDb}&apikey={_options.Key}&plot={_options.Plot}");
             var content = await response.Content.ReadAsStringAsync();
             var movieDeserialize = JsonConvert.DeserializeObject<ImDbInforDto>(content);
             var movie = new Movie(

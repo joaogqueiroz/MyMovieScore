@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyMovieScore.Core.Services;
 using System;
@@ -14,19 +14,16 @@ namespace MyMovieScore.Infrastructure.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IConfiguration _configuration;
+        private readonly JwtOptions _jwtOptions;
         private readonly PasswordHasher<object> _passwordHasher = new PasswordHasher<object>();
 
-        public AuthService(IConfiguration configuration)
+        public AuthService(IOptions<JwtOptions> jwtOptions)
         {
-            _configuration = configuration;
+            _jwtOptions = jwtOptions.Value;
         }
         public string GenerateJwtToken(string email)
         {
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
-            var key = _configuration["Jwt:Key"];
-            var securetyKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var securetyKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
             var credentials = new SigningCredentials(securetyKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
@@ -34,9 +31,9 @@ namespace MyMovieScore.Infrastructure.Auth
           new Claim("userName", email),
        };
             var token = new JwtSecurityToken(
-             issuer: issuer,
-             audience: audience,
-             expires: DateTime.Now.AddHours(8),
+             issuer: _jwtOptions.Issuer,
+             audience: _jwtOptions.Audience,
+             expires: DateTime.UtcNow.AddHours(_jwtOptions.ExpirationHours),
              signingCredentials: credentials,
              claims: claims);
 
