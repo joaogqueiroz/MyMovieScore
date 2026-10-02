@@ -47,6 +47,8 @@ Requirements: Docker.
 docker compose up -d --build
 ```
 
-This starts SQL Server and the API, applies the migrations and serves the API at http://localhost:5000 (Swagger at http://localhost:5000/swagger).
+This starts SQL Server and the API, applies the migrations and serves the API at http://localhost:5000 (Swagger at http://localhost:5000/swagger). Inside Docker the API reaches the database by its service name, `sqlserver`.
+
+To run the API with `dotnet run` instead, start only the database with `docker compose up -d sqlserver`. The connection string in `appsettings.json` points to `localhost,1433`.
 
 The OMDb API key is read from `ExternalService:Key` in `MyMovieScore.Api/appsettings.json`. You can get a free key at https://www.omdbapi.com/apikey.aspx.
