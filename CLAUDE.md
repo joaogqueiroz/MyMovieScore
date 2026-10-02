@@ -11,7 +11,12 @@ docker compose up -d sqlserver                      # start only the database fo
 docker compose up -d --build                        # full stack; API on http://localhost:5000, Swagger at /swagger
 ```
 
-There are no test projects yet. CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs restore, a Release build and `dotnet test` on the solution, so a new test project must be added to `MyMovieScore.sln` to be picked up.
+```sh
+dotnet test MyMovieScore.sln                        # unit tests (xUnit + Moq + FluentValidation.TestHelper)
+dotnet test MyMovieScore.sln --filter "FullyQualifiedName~Validators"   # one area
+```
+
+Unit tests live in `MyMovieScore.UnitTests`, mirroring the source layout (`Application/Validators`, `Application/Commands`, `Application/Queries`, `Infrastructure`). They need no database or network. CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs restore, a Release build and `dotnet test` on the solution, so any new test project must be added to `MyMovieScore.sln` to be picked up.
 
 EF Core migrations live in the Infrastructure project, with the Api project as startup:
 
