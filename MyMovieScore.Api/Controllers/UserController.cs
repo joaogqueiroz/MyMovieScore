@@ -36,7 +36,7 @@ namespace MyMovieScore.Api.Controllers
         public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
         {
             var id = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetById), new { id = id }, command);
+            return CreatedAtAction(nameof(GetById), new { id = id }, new { id, command.Name, command.Email });
         }
         [HttpPost("login")]
         [AllowAnonymous]
