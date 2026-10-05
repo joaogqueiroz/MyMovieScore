@@ -25,7 +25,6 @@ namespace MyMovieScore.Application.Validators
 
             RuleFor(p => p.Name)
                   .NotEmpty()
-                  .NotNull()
                   .WithMessage("Name cannot be null or empty");
         }
         public bool PasswordValidation(string password)

@@ -14,12 +14,10 @@ namespace MyMovieScore.Application.Validators
         {
             RuleFor(m => m.UserId)
                 .NotEmpty()
-                .NotNull()
                 .WithMessage("Should have user Id");
             
             RuleFor(m => m.IdIMDb)
                 .NotEmpty()
-                .NotNull()
                 .WithMessage("Should have IMDb ID");
 
             RuleFor(m => m.Watched)
@@ -27,9 +25,8 @@ namespace MyMovieScore.Application.Validators
                 .WithMessage("Should inform if was watched");
 
             RuleFor(m => m.UserScore)
-                .GreaterThanOrEqualTo(0)
-                .LessThanOrEqualTo(10)
-                .WithMessage("Should hava a note between 0 to 10");
+                .InclusiveBetween(0, 10)
+                .WithMessage("Score must be between 0 and 10");
 
         }
     }

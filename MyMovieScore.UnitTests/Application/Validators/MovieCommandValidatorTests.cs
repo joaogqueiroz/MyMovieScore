@@ -101,5 +101,35 @@ namespace MyMovieScore.UnitTests.Application.Validators
 
             result.ShouldHaveValidationErrorFor(c => c.UserScore);
         }
+
+        // Each rule has to answer with its own message, below and above the range,
+        // instead of FluentValidation's default (which follows the server's language).
+        [Theory]
+        [InlineData(-1f)]
+        [InlineData(10.5f)]
+        public void ScoreOutOfRange_UsesTheScoreMessageOnBothEnds(float score)
+        {
+            var create = ValidCreateCommand();
+            create.UserScore = score;
+
+            _createValidator.TestValidate(create).ShouldHaveValidationErrorFor(c => c.UserScore).WithErrorMessage("Score must be between 0 and 10");
+            _updateValidator.TestValidate(new UpdateMovieCommand { Id = 1, Watched = true, UserScore = score })
+                .ShouldHaveValidationErrorFor(c => c.UserScore).WithErrorMessage("Score must be between 0 and 10");
+        }
+
+        [Fact]
+        public void MissingIds_UseTheirOwnMessages()
+        {
+            var create = ValidCreateCommand();
+            create.UserId = 0;
+            create.IdIMDb = "";
+
+            var result = _createValidator.TestValidate(create);
+
+            result.ShouldHaveValidationErrorFor(c => c.UserId).WithErrorMessage("Should have user Id");
+            result.ShouldHaveValidationErrorFor(c => c.IdIMDb).WithErrorMessage("Should have IMDb ID");
+            _updateValidator.TestValidate(new UpdateMovieCommand { Id = 0, Watched = true, UserScore = 5 })
+                .ShouldHaveValidationErrorFor(c => c.Id).WithErrorMessage("Should have ID");
+        }
     }
 }

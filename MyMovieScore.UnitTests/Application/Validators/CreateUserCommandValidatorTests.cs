@@ -89,7 +89,8 @@ namespace MyMovieScore.UnitTests.Application.Validators
 
             var result = _validator.TestValidate(command);
 
-            result.ShouldHaveValidationErrorFor(c => c.Name);
+            // Same custom message for empty and null, never the library default
+            result.ShouldHaveValidationErrorFor(c => c.Name).WithErrorMessage("Name cannot be null or empty");
         }
     }
 }

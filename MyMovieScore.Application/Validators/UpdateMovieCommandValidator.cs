@@ -14,7 +14,6 @@ namespace MyMovieScore.Application.Validators
         {
             RuleFor(m => m.Id)
                 .NotEmpty()
-                .NotNull()
                 .WithMessage("Should have ID");
 
             RuleFor(m => m.Watched)
@@ -22,9 +21,8 @@ namespace MyMovieScore.Application.Validators
                 .WithMessage("Should inform if was watched");
 
             RuleFor(m => m.UserScore)
-                .GreaterThanOrEqualTo(0)
-                .LessThanOrEqualTo(10)
-                .WithMessage("Should inform if was watched");
+                .InclusiveBetween(0, 10)
+                .WithMessage("Score must be between 0 and 10");
         }
     }
 }
