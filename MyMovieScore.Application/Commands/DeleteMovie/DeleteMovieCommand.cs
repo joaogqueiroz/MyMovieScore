@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Application.Commands.DeleteMovie
 {
-    public class DeleteMovieCommand : IRequest<Unit>
+    public class DeleteMovieCommand : IRequest<bool>
     {
         public DeleteMovieCommand(int id)
         {

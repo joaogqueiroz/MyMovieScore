@@ -56,8 +56,9 @@ namespace MyMovieScore.UnitTests.Application.Commands
             movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(movie);
             var handler = new UpdateMovieCommandHandler(movieRepositoryMock.Object);
 
-            await handler.Handle(new UpdateMovieCommand { Id = 1, Watched = true, UserScore = 8 }, CancellationToken.None);
+            var found = await handler.Handle(new UpdateMovieCommand { Id = 1, Watched = true, UserScore = 8 }, CancellationToken.None);
 
+            Assert.True(found);
             Assert.True(movie.Watched);
             Assert.Equal(8, movie.UserScore);
             movieRepositoryMock.Verify(r => r.UpdateAsync(movie), Times.Once);
@@ -71,9 +72,34 @@ namespace MyMovieScore.UnitTests.Application.Commands
             movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(movie);
             var handler = new DeleteMovieCommandHandler(movieRepositoryMock.Object);
 
-            await handler.Handle(new DeleteMovieCommand(1), CancellationToken.None);
+            var found = await handler.Handle(new DeleteMovieCommand(1), CancellationToken.None);
 
+            Assert.True(found);
             movieRepositoryMock.Verify(r => r.DeleteAsync(movie), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateMovie_UnknownId_ReturnsFalseAndSavesNothing()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            var handler = new UpdateMovieCommandHandler(movieRepositoryMock.Object);
+
+            var found = await handler.Handle(new UpdateMovieCommand { Id = 99, Watched = true, UserScore = 8 }, CancellationToken.None);
+
+            Assert.False(found);
+            movieRepositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Movie>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteMovie_UnknownId_ReturnsFalseAndDeletesNothing()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            var handler = new DeleteMovieCommandHandler(movieRepositoryMock.Object);
+
+            var found = await handler.Handle(new DeleteMovieCommand(99), CancellationToken.None);
+
+            Assert.False(found);
+            movieRepositoryMock.Verify(r => r.DeleteAsync(It.IsAny<Movie>()), Times.Never);
         }
     }
 }

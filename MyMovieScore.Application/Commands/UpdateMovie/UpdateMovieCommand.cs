@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Application.Commands.UpdateMovie
 {
-    public class UpdateMovieCommand : IRequest<Unit>
+    public class UpdateMovieCommand : IRequest<bool>
     {
         public int Id { get; set; }
         public bool Watched { get; set; }

@@ -51,14 +51,22 @@ namespace MyMovieScore.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateMovieCommand command)
         {
-            await _mediator.Send(command);
+            var found = await _mediator.Send(command);
+            if (!found)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
         [HttpDelete]
         public async Task<IActionResult> Delete(int Id)
         {
             var command = new DeleteMovieCommand(Id);
-            await _mediator.Send(command);
+            var found = await _mediator.Send(command);
+            if (!found)
+            {
+                return NotFound();
+            }
             return NoContent();
         }
     }

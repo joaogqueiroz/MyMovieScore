@@ -8,18 +8,22 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Application.Commands.DeleteMovie
 {
-    public class DeleteMovieCommandHandler : IRequestHandler<DeleteMovieCommand, Unit>
+    public class DeleteMovieCommandHandler : IRequestHandler<DeleteMovieCommand, bool>
     {
         private readonly IMovieRepository _movieRepository;
         public DeleteMovieCommandHandler(IMovieRepository movieRepository)
         {
             _movieRepository = movieRepository;
         }
-        public async Task<Unit> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = await _movieRepository.GetByIdAsync(request.Id);
+            if (movie == null)
+            {
+                return false;
+            }
             await _movieRepository.DeleteAsync(movie);
-            return Unit.Value;
+            return true;
         }
     }
 }
