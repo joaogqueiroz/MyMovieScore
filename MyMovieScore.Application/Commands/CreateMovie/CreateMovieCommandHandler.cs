@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Application.Commands.CreateMovie
 {
-    public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int>
+    public class CreateMovieCommandHandler : IRequestHandler<CreateMovieCommand, int?>
     {
         private readonly IMovieRepository _movieRepository;
         private readonly IIMDbExternalService _iIMDbExternalService;
@@ -19,9 +19,13 @@ namespace MyMovieScore.Application.Commands.CreateMovie
             _movieRepository = movieRepository;
             _iIMDbExternalService = iIMDbExternalService;
         }
-        public async Task<int> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
+        public async Task<int?> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
         {
             var externalMovie = await _iIMDbExternalService.GetByIMDbIdAsync(request.IdIMDb);
+            if (externalMovie == null)
+            {
+                return null;
+            }
             var movie = new Movie(externalMovie.IdIMDb, request.UserId, externalMovie.Name,externalMovie.Description,externalMovie.ReleaseDate,externalMovie.Genre,request.Watched,request.UserScore);
             await _movieRepository.AddAsync(movie);
             return movie.Id;

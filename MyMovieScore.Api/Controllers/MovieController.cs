@@ -46,6 +46,10 @@ namespace MyMovieScore.Api.Controllers
         public async Task<IActionResult> Post([FromBody] CreateMovieCommand command)
         {
             var id = await _mediator.Send(command);
+            if (id == null)
+            {
+                return NotFound($"No movie with IMDb id '{command.IdIMDb}' was found on OMDb.");
+            }
             return CreatedAtAction(nameof(GetById), new { id = id }, command);
         }
         [HttpPut]

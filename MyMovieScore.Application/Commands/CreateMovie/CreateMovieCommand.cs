@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace MyMovieScore.Application.Commands.CreateMovie
 {
-    public class CreateMovieCommand : IRequest<int>
+    // Returns the new movie's id, or null when the IMDb id is not found on OMDb
+    public class CreateMovieCommand : IRequest<int?>
     {
         public int UserId { get; set; }
         public string IdIMDb { get; set; }

@@ -14,6 +14,9 @@ namespace MyMovieScore.Core.DTOs
         public string Released { get; set; }
         public string Genre { get; set; }
         public List<Rating> Ratings { get; set; }
+        // "True" when OMDb found the movie, "False" with an Error message otherwise
+        public string Response { get; set; }
+        public string Error { get; set; }
     }
 
     public partial class Rating

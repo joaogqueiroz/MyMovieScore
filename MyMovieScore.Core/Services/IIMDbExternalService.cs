@@ -9,7 +9,8 @@ namespace MyMovieScore.Core.Services
 {
     public interface IIMDbExternalService
     {
-        Task<Movie> GetByIMDbIdAsync(string idIMDb);
+        // Returns null when OMDb has no movie with that IMDb id
+        Task<Movie?> GetByIMDbIdAsync(string idIMDb);
 
     }
 }

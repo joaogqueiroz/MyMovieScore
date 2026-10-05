@@ -49,6 +49,20 @@ namespace MyMovieScore.UnitTests.Application.Commands
         }
 
         [Fact]
+        public async Task CreateMovie_ImdbIdNotFoundOnOmdb_ReturnsNullAndSavesNothing()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            var externalServiceMock = new Mock<IIMDbExternalService>();
+            externalServiceMock.Setup(s => s.GetByIMDbIdAsync("tt0000000")).ReturnsAsync((Movie?)null);
+            var handler = new CreateMovieCommandHandler(movieRepositoryMock.Object, externalServiceMock.Object);
+
+            var id = await handler.Handle(new CreateMovieCommand { UserId = 7, IdIMDb = "tt0000000", Watched = true, UserScore = 9 }, CancellationToken.None);
+
+            Assert.Null(id);
+            movieRepositoryMock.Verify(r => r.AddAsync(It.IsAny<Movie>()), Times.Never);
+        }
+
+        [Fact]
         public async Task UpdateMovie_ChangesWatchedAndScore()
         {
             var movie = OmdbMovie();

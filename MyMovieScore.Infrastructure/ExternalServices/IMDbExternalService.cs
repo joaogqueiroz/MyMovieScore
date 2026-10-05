@@ -24,7 +24,7 @@ namespace MyMovieScore.Infrastructure.ExternalServices
             _options = options.Value;
         }
 
-        public async Task<Movie> GetByIMDbIdAsync(string idIMDb)
+        public async Task<Movie?> GetByIMDbIdAsync(string idIMDb)
         {
             if (string.IsNullOrWhiteSpace(_options.Key))
             {
@@ -32,8 +32,14 @@ namespace MyMovieScore.Infrastructure.ExternalServices
             }
 
             var response = await _httpClient.GetAsync($"?i={idIMDb}&apikey={_options.Key}&plot={_options.Plot}");
+            // OMDb answers 401 for a bad key: a server configuration problem, not a missing movie
+            response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var movieDeserialize = JsonConvert.DeserializeObject<ImDbInforDto>(content);
+            if (movieDeserialize?.Response != "True")
+            {
+                return null;
+            }
             var movie = new Movie(
                 movieDeserialize.ImdbId,
                 0,
@@ -44,7 +50,7 @@ namespace MyMovieScore.Infrastructure.ExternalServices
                 false,
                 0
                 );
-            foreach (var item in movieDeserialize.Ratings)
+            foreach (var item in movieDeserialize.Ratings ?? new List<Rating>())
             {
                 ExternalRatings externalRatings = new ExternalRatings(item.Source, item.Value);
                 movie.AddExternalRatings(externalRatings);

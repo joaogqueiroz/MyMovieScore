@@ -24,14 +24,19 @@ namespace MyMovieScore.UnitTests.Infrastructure
         private class FakeHandler : HttpMessageHandler
         {
             private readonly string _body;
+            private readonly HttpStatusCode _status;
             public HttpRequestMessage? Request { get; private set; }
 
-            public FakeHandler(string body) => _body = body;
+            public FakeHandler(string body, HttpStatusCode status = HttpStatusCode.OK)
+            {
+                _body = body;
+                _status = status;
+            }
 
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
             {
                 Request = request;
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                return Task.FromResult(new HttpResponseMessage(_status)
                 {
                     Content = new StringContent(_body, Encoding.UTF8, "application/json")
                 });
@@ -83,6 +88,37 @@ namespace MyMovieScore.UnitTests.Infrastructure
 
             Assert.Contains("ExternalService:Key", error.Message);
             Assert.Null(handler.Request);
+        }
+
+        [Fact]
+        public async Task GetByIMDbIdAsync_UnknownImdbId_ReturnsNull()
+        {
+            // What OMDb sends back with HTTP 200 for an id it does not know
+            var handler = new FakeHandler(@"{ ""Response"": ""False"", ""Error"": ""Incorrect IMDb ID."" }");
+
+            var movie = await CreateService(handler, "test-key").GetByIMDbIdAsync("tt0000000");
+
+            Assert.Null(movie);
+        }
+
+        [Fact]
+        public async Task GetByIMDbIdAsync_RejectedApiKey_Throws()
+        {
+            var handler = new FakeHandler(@"{ ""Response"": ""False"", ""Error"": ""Invalid API key!"" }", HttpStatusCode.Unauthorized);
+
+            await Assert.ThrowsAsync<HttpRequestException>(() => CreateService(handler, "wrong-key").GetByIMDbIdAsync("tt0111161"));
+        }
+
+        [Fact]
+        public async Task GetByIMDbIdAsync_MovieWithoutRatings_ReturnsMovieWithNoRatings()
+        {
+            var handler = new FakeHandler(@"{ ""Title"": ""Obscure film"", ""imdbID"": ""tt9999999"", ""Response"": ""True"" }");
+
+            var movie = await CreateService(handler, "test-key").GetByIMDbIdAsync("tt9999999");
+
+            Assert.NotNull(movie);
+            Assert.Equal("Obscure film", movie!.Name);
+            Assert.Empty(movie.ExternalRatings);
         }
     }
 }
