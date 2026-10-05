@@ -26,14 +26,41 @@ namespace MyMovieScore.UnitTests.Application.Validators
         [Theory]
         [InlineData("not-an-email")]
         [InlineData("user.test.com")]
-        public void InvalidEmail_HasEmailError(string email)
+        [InlineData("")]
+        [InlineData(null)]
+        public void InvalidOrMissingEmail_HasEmailError(string? email)
         {
             var command = ValidCommand();
-            command.Email = email;
+            command.Email = email!;
 
             var result = _validator.TestValidate(command);
 
             result.ShouldHaveValidationErrorFor(c => c.Email);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void MissingPassword_HasPasswordErrorInsteadOfThrowing(string? password)
+        {
+            var command = ValidCommand();
+            command.Password = password!;
+
+            var result = _validator.TestValidate(command);
+
+            result.ShouldHaveValidationErrorFor(c => c.Password);
+        }
+
+        [Fact]
+        public void MissingAndMalformedEmail_GetDifferentMessages()
+        {
+            var missing = ValidCommand();
+            missing.Email = "";
+            var malformed = ValidCommand();
+            malformed.Email = "not-an-email";
+
+            _validator.TestValidate(missing).ShouldHaveValidationErrorFor(c => c.Email).WithErrorMessage("Email is required");
+            _validator.TestValidate(malformed).ShouldHaveValidationErrorFor(c => c.Email).WithErrorMessage("Email format is wrong");
         }
 
         [Theory]

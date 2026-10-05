@@ -14,6 +14,8 @@ namespace MyMovieScore.Application.Validators
         public CreateUserCommandValidator()
         {
             RuleFor(p => p.Email)
+            .NotEmpty()
+            .WithMessage("Email is required")
             .EmailAddress()
             .WithMessage("Email format is wrong");
 
@@ -28,6 +30,11 @@ namespace MyMovieScore.Application.Validators
         }
         public bool PasswordValidation(string password)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                return false;
+            }
+
             var regex = new Regex(@"^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=]).*$");
 
             return regex.IsMatch(password);
