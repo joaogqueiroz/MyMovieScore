@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMovieScore.Core", "MyMovi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMovieScore.UnitTests", "MyMovieScore.UnitTests\MyMovieScore.UnitTests.csproj", "{2CB6B97E-EA3D-4B02-816C-024EBEBBEB33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyMovieScore.ApiTests", "MyMovieScore.ApiTests\MyMovieScore.ApiTests.csproj", "{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{2CB6B97E-EA3D-4B02-816C-024EBEBBEB33}.Release|x64.Build.0 = Release|Any CPU
 		{2CB6B97E-EA3D-4B02-816C-024EBEBBEB33}.Release|x86.ActiveCfg = Release|Any CPU
 		{2CB6B97E-EA3D-4B02-816C-024EBEBBEB33}.Release|x86.Build.0 = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|x64.Build.0 = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Debug|x86.Build.0 = Debug|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|x64.ActiveCfg = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|x64.Build.0 = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|x86.ActiveCfg = Release|Any CPU
+		{EEFEF00E-07E5-4D7C-A718-2081C3C97AA4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

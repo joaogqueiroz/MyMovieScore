@@ -113,3 +113,6 @@ if (app.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
 }
 
 app.Run();
+
+// Lets WebApplicationFactory<Program> in MyMovieScore.ApiTests start the API
+public partial class Program { }

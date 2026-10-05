@@ -12,11 +12,17 @@ docker compose up -d --build                        # full stack; API on http://
 ```
 
 ```sh
-dotnet test MyMovieScore.sln                        # unit tests (xUnit + Moq + FluentValidation.TestHelper)
+dotnet test MyMovieScore.sln                        # unit + API tests (API tests need Docker running)
+dotnet test MyMovieScore.UnitTests                  # unit tests only, no Docker
 dotnet test MyMovieScore.sln --filter "FullyQualifiedName~Validators"   # one area
 ```
 
-Unit tests live in `MyMovieScore.UnitTests`, mirroring the source layout (`Application/Validators`, `Application/Commands`, `Application/Queries`, `Infrastructure`). They need no database or network. CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs restore, a Release build and `dotnet test` on the solution, so any new test project must be added to `MyMovieScore.sln` to be picked up.
+- `MyMovieScore.UnitTests` (xUnit + Moq + FluentValidation.TestHelper) mirrors the source layout (`Application/Validators`, `Application/Commands`, `Application/Queries`, `Infrastructure`) and needs no database or network.
+- `MyMovieScore.ApiTests` starts the whole API with `WebApplicationFactory<Program>` (hence `public partial class Program` at the end of `Program.cs`) against SQL Server 2022 from Testcontainers, with migrations applied on startup. `ApiFactory` swaps `IIMDbExternalService` for a fake that knows only `tt0111161`. These tests cover HTTP behavior: wrong JSON types and malformed bodies (400), validation messages, missing or forged tokens (401) and unknown ids (404).
+
+Validation errors reach clients as ASP.NET Core `ValidationProblemDetails` from `[ApiController]`, which runs before `ValidationFilter`. Give every FluentValidation rule its own `WithMessage` (it applies only to the rule right before it), or clients get the library's default text in the server's language.
+
+CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs restore, a Release build and `dotnet test` on the solution, so any new test project must be added to `MyMovieScore.sln` to be picked up.
 
 EF Core migrations live in the Infrastructure project, with the Api project as startup:
 
