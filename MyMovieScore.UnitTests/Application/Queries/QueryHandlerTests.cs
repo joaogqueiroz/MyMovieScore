@@ -47,6 +47,39 @@ namespace MyMovieScore.UnitTests.Application.Queries
         }
 
         [Fact]
+        public async Task MovieQueries_ReturnTheExternalRatings()
+        {
+            var movie = Movie("tt0111161", "The Shawshank Redemption");
+            movie.AddExternalRatings(new ExternalRatings("Internet Movie Database", "9.3/10"));
+            movie.AddExternalRatings(new ExternalRatings("Metacritic", "82/100"));
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(movie);
+            movieRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Movie> { movie });
+
+            var byId = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1), CancellationToken.None);
+            var all = await new GetAllMoviesQueryHandler(movieRepositoryMock.Object).Handle(new GetAllMoviesQuery(), CancellationToken.None);
+
+            foreach (var ratings in new[] { byId.ExternalRatings, all.Single().ExternalRatings })
+            {
+                Assert.Collection(ratings,
+                    r => { Assert.Equal("Internet Movie Database", r.Source); Assert.Equal("9.3/10", r.Value); },
+                    r => { Assert.Equal("Metacritic", r.Source); Assert.Equal("82/100", r.Value); });
+            }
+        }
+
+        [Fact]
+        public async Task MovieWithoutRatings_ReturnsAnEmptyListNotNull()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Movie("tt0111161", "The Shawshank Redemption"));
+
+            var result = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1), CancellationToken.None);
+
+            Assert.NotNull(result.ExternalRatings);
+            Assert.Empty(result.ExternalRatings);
+        }
+
+        [Fact]
         public async Task GetMovieById_NotFound_ReturnsNull()
         {
             var handler = new GetMovieByIdQueryHandler(new Mock<IMovieRepository>().Object);

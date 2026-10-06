@@ -8,7 +8,7 @@ namespace MyMovieScore.Application.ViewModels
 {
     public class MovieViewModel
     {
-        public MovieViewModel(int id, string idIMDb, int userId, string name, string description, string releaseDate, string genre, bool watched, float userScore)
+        public MovieViewModel(int id, string idIMDb, int userId, string name, string description, string releaseDate, string genre, bool watched, float userScore, List<ExternalRatingViewModel> externalRatings)
         {
             Id = id;
             IdIMDb = idIMDb;
@@ -19,6 +19,7 @@ namespace MyMovieScore.Application.ViewModels
             Genre = genre;
             Watched = watched;
             UserScore = userScore;
+            ExternalRatings = externalRatings;
         }
 
         public int Id { get; private set; }
@@ -30,5 +31,6 @@ namespace MyMovieScore.Application.ViewModels
         public string Genre { get; private set; }
         public bool Watched { get; private set; }
         public float UserScore { get; private set; }
+        public List<ExternalRatingViewModel> ExternalRatings { get; private set; }
     }
 }

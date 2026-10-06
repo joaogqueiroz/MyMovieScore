@@ -18,7 +18,7 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
         }
         public async Task<List<Movie>> GetAllAsync()
         {
-            return await _dbContext.Movies.ToListAsync();
+            return await _dbContext.Movies.Include(m => m.ExternalRatings).ToListAsync();
         }
 
         public async Task AddAsync(Movie movie)
@@ -40,7 +40,7 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
 
         public async Task<Movie> GetByIdAsync(int id)
         {
-            return await _dbContext.Movies.SingleOrDefaultAsync(m => m.Id == id);
+            return await _dbContext.Movies.Include(m => m.ExternalRatings).SingleOrDefaultAsync(m => m.Id == id);
         }
     }
 }

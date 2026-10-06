@@ -32,7 +32,8 @@ namespace MyMovieScore.Application.Queries.GetMovieById
                 movie.ReleaseDate,
                 movie.Genre,
                 movie.Watched,
-                movie.UserScore
+                movie.UserScore,
+                movie.ExternalRatings.Select(r => new ExternalRatingViewModel(r.Source, r.Value)).ToList()
                 );
             return movieViewModel;
         }

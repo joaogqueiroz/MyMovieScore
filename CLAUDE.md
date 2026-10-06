@@ -53,7 +53,8 @@ Pending migrations are applied automatically at startup in `Program.cs` when `Da
 Cross-cutting behavior worth knowing:
 
 - Validation runs through FluentValidation's MVC integration; `ValidationFilter` turns invalid `ModelState` into a 400 with a list of error messages. Handlers do not validate.
-- Creating a movie: `CreateMovieCommandHandler` calls OMDb by IMDb id, which returns a `Movie` populated with title/plot/release/genre and `ExternalRatings`; the handler then builds the persisted `Movie` from those fields plus the user's `UserId`/`Watched`/`UserScore`.
+- Creating a movie: `CreateMovieCommandHandler` calls OMDb by IMDb id, which returns a `Movie` populated with title/plot/release/genre and `ExternalRatings`; the handler then builds the persisted `Movie` from those fields plus the user's `UserId`/`Watched`/`UserScore`, and copies each external rating onto it with `AddExternalRatings`. An unknown IMDb id makes OMDb answer `Response: "False"`; the client returns null and the API answers 404.
+- Reading movies: `MovieRepository` loads `ExternalRatings` with `Include`, and `MovieViewModel.ExternalRatings` (a list of `ExternalRatingViewModel`, empty when there are none) carries them to the API. The `ExternalRatings` foreign key cascades, so deleting a movie deletes its ratings.
 - Repositories call `SaveChangesAsync` themselves (no unit of work). `UpdateAsync` relies on EF change tracking: load the entity via the repository, mutate it, then call `UpdateAsync`.
 
 A Postman collection is in `MyMovieScore.postman_collection.json`; the README lists all endpoints.

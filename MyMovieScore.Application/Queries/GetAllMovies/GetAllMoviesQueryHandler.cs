@@ -31,7 +31,8 @@ namespace MyMovieScore.Application.Queries.GetAllMovies
                     m.ReleaseDate,
                     m.Genre,
                     m.Watched,
-                    m.UserScore))
+                    m.UserScore,
+                    m.ExternalRatings.Select(r => new ExternalRatingViewModel(r.Source, r.Value)).ToList()))
                 .ToList();
             return movieViewModel;
                 

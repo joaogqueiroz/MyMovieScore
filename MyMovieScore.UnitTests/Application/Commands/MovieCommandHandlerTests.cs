@@ -115,5 +115,24 @@ namespace MyMovieScore.UnitTests.Application.Commands
             Assert.False(found);
             movieRepositoryMock.Verify(r => r.DeleteAsync(It.IsAny<Movie>()), Times.Never);
         }
+
+        [Fact]
+        public async Task CreateMovie_SavesTheOmdbRatings()
+        {
+            var omdbMovie = OmdbMovie();
+            omdbMovie.AddExternalRatings(new ExternalRatings("Internet Movie Database", "9.3/10"));
+            omdbMovie.AddExternalRatings(new ExternalRatings("Rotten Tomatoes", "89%"));
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            var externalServiceMock = new Mock<IIMDbExternalService>();
+            externalServiceMock.Setup(s => s.GetByIMDbIdAsync("tt0111161")).ReturnsAsync(omdbMovie);
+            var handler = new CreateMovieCommandHandler(movieRepositoryMock.Object, externalServiceMock.Object);
+
+            await handler.Handle(new CreateMovieCommand { UserId = 7, IdIMDb = "tt0111161", Watched = true, UserScore = 9 }, CancellationToken.None);
+
+            movieRepositoryMock.Verify(r => r.AddAsync(It.Is<Movie>(m =>
+                m.ExternalRatings.Count == 2 &&
+                m.ExternalRatings[0].Source == "Internet Movie Database" && m.ExternalRatings[0].Value == "9.3/10" &&
+                m.ExternalRatings[1].Source == "Rotten Tomatoes" && m.ExternalRatings[1].Value == "89%")), Times.Once);
+        }
     }
 }

@@ -48,10 +48,19 @@ namespace MyMovieScore.ApiTests
 
         private class FakeOmdb : IIMDbExternalService
         {
-            public Task<Movie?> GetByIMDbIdAsync(string idIMDb) =>
-                Task.FromResult(idIMDb == KnownImdbId
-                    ? new Movie(KnownImdbId, 0, "The Shawshank Redemption", "Two imprisoned men bond.", "14 Oct 1994", "Drama", false, 0)
-                    : null);
+            public Task<Movie?> GetByIMDbIdAsync(string idIMDb)
+            {
+                if (idIMDb != KnownImdbId)
+                {
+                    return Task.FromResult<Movie?>(null);
+                }
+
+                var movie = new Movie(KnownImdbId, 0, "The Shawshank Redemption", "Two imprisoned men bond.", "14 Oct 1994", "Drama", false, 0);
+                movie.AddExternalRatings(new ExternalRatings("Internet Movie Database", "9.3/10"));
+                movie.AddExternalRatings(new ExternalRatings("Rotten Tomatoes", "89%"));
+                movie.AddExternalRatings(new ExternalRatings("Metacritic", "82/100"));
+                return Task.FromResult<Movie?>(movie);
+            }
         }
     }
 }

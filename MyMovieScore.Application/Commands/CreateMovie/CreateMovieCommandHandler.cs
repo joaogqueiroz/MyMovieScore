@@ -27,6 +27,10 @@ namespace MyMovieScore.Application.Commands.CreateMovie
                 return null;
             }
             var movie = new Movie(externalMovie.IdIMDb, request.UserId, externalMovie.Name,externalMovie.Description,externalMovie.ReleaseDate,externalMovie.Genre,request.Watched,request.UserScore);
+            foreach (var rating in externalMovie.ExternalRatings)
+            {
+                movie.AddExternalRatings(new ExternalRatings(rating.Source, rating.Value));
+            }
             await _movieRepository.AddAsync(movie);
             return movie.Id;
         }

@@ -151,6 +151,7 @@ namespace MyMovieScore.ApiTests
             Assert.Equal(HttpStatusCode.NotFound, (await _client.DeleteAsync("/api/movie?id=999999")).StatusCode);
         }
 
+        // The movie has ratings, so this also proves they are deleted with it (cascade on the foreign key)
         [Fact]
         public async Task DeleteMovie_ExistingMovie_IsGoneAfterwards()
         {
@@ -159,6 +160,44 @@ namespace MyMovieScore.ApiTests
 
             Assert.Equal(HttpStatusCode.NoContent, (await _client.DeleteAsync($"/api/movie?id={id}")).StatusCode);
             Assert.Equal(HttpStatusCode.NotFound, (await _client.GetAsync($"/api/movie/{id}")).StatusCode);
+        }
+
+        [Fact]
+        public async Task AddMovie_SavesTheOmdbRatings()
+        {
+            var userId = await SignInAsync();
+            var id = await AddMovieAsync(userId);
+
+            var ratings = JsonDocument.Parse(await _client.GetStringAsync($"/api/movie/{id}")).RootElement
+                .GetProperty("externalRatings").EnumerateArray()
+                .Select(r => $"{r.GetProperty("source").GetString()}={r.GetProperty("value").GetString()}")
+                .OrderBy(r => r);
+
+            Assert.Equal(new[] { "Internet Movie Database=9.3/10", "Metacritic=82/100", "Rotten Tomatoes=89%" }, ratings);
+        }
+
+        [Fact]
+        public async Task GetAllMovies_IncludesTheRatings()
+        {
+            var userId = await SignInAsync();
+            var id = await AddMovieAsync(userId);
+
+            var movie = JsonDocument.Parse(await _client.GetStringAsync("/api/movie")).RootElement
+                .EnumerateArray().Single(m => m.GetProperty("id").GetInt32() == id);
+
+            Assert.Equal(3, movie.GetProperty("externalRatings").GetArrayLength());
+        }
+
+        [Fact]
+        public async Task UpdateMovie_KeepsTheRatings()
+        {
+            var userId = await SignInAsync();
+            var id = await AddMovieAsync(userId);
+
+            await _client.PutAsJsonAsync("/api/movie", new { id, watched = false, userScore = 7 });
+
+            var movie = JsonDocument.Parse(await _client.GetStringAsync($"/api/movie/{id}")).RootElement;
+            Assert.Equal(3, movie.GetProperty("externalRatings").GetArrayLength());
         }
     }
 }
