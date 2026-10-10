@@ -7,7 +7,7 @@ using MyMovieScore.Application.Commands.DeleteMovie;
 using MyMovieScore.Application.Commands.UpdateMovie;
 using MyMovieScore.Application.Queries.GetAllMovies;
 using MyMovieScore.Application.Queries.GetMovieById;
-using System.Security.Claims;
+using MyMovieScore.Api.Extensions;
 
 namespace MyMovieScore.Api.Controllers
 {
@@ -23,8 +23,7 @@ namespace MyMovieScore.Api.Controllers
         }
 
         // The user always comes from the access token (the "sub" claim), never from the request
-        private int? CurrentUserId =>
-            int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value, out var id) ? id : null;
+        private int? CurrentUserId => User.GetUserId();
 
         [HttpGet]
         public async Task<IActionResult> Get()

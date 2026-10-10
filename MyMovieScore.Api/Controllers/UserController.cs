@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyMovieScore.Application.Commands.CreateUser;
 using MyMovieScore.Application.Commands.LoginUser;
+using MyMovieScore.Api.Extensions;
 using MyMovieScore.Application.Queries.GetUserById;
 
 namespace MyMovieScore.Api.Controllers
@@ -17,9 +18,17 @@ namespace MyMovieScore.Api.Controllers
         {
             _mediator = mediator;
         }
+        // Only the signed-in user's own profile; any other id answers 404, so names and
+        // emails cannot be listed by trying ids
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
+            if (User.GetUserId() != id)
+            {
+                return NotFound();
+            }
+
             var query = new GetUserByIdQuery(id);
             var user = await _mediator.Send(query);
 

@@ -63,7 +63,7 @@ sequenceDiagram
 | --- | --- | --- | --- |
 | POST | `/api/user` | | `{ "email", "password", "name" }` |
 | POST | `/api/user/login` | | `{ "email", "password" }` → returns a JWT |
-| GET | `/api/user/{id}` | | |
+| GET | `/api/user/{id}` | token | only your own id; any other answers `404` |
 | POST | `/api/movie` | token | `{ "idIMDb", "watched", "userScore" }`, e.g. `"idIMDb": "tt0111161"` |
 | GET | `/api/movie` | token | |
 | GET | `/api/movie/{id}` | token | |
