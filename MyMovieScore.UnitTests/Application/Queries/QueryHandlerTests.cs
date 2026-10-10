@@ -16,14 +16,14 @@ namespace MyMovieScore.UnitTests.Application.Queries
         public async Task GetAllMovies_MapsEveryMovie()
         {
             var movieRepositoryMock = new Mock<IMovieRepository>();
-            movieRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Movie>
+            movieRepositoryMock.Setup(r => r.GetAllByUserIdAsync(3)).ReturnsAsync(new List<Movie>
             {
                 Movie("tt0111161", "The Shawshank Redemption"),
                 Movie("tt0068646", "The Godfather")
             });
             var handler = new GetAllMoviesQueryHandler(movieRepositoryMock.Object);
 
-            var result = await handler.Handle(new GetAllMoviesQuery(), CancellationToken.None);
+            var result = await handler.Handle(new GetAllMoviesQuery(3), CancellationToken.None);
 
             Assert.Equal(2, result.Count);
             Assert.Equal("The Shawshank Redemption", result[0].Name);
@@ -37,7 +37,7 @@ namespace MyMovieScore.UnitTests.Application.Queries
             movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Movie("tt0111161", "The Shawshank Redemption"));
             var handler = new GetMovieByIdQueryHandler(movieRepositoryMock.Object);
 
-            var result = await handler.Handle(new GetMovieByIdQuery(1), CancellationToken.None);
+            var result = await handler.Handle(new GetMovieByIdQuery(1, 3), CancellationToken.None);
 
             Assert.NotNull(result);
             Assert.Equal("The Shawshank Redemption", result.Name);
@@ -54,10 +54,10 @@ namespace MyMovieScore.UnitTests.Application.Queries
             movie.AddExternalRatings(new ExternalRatings("Metacritic", "82/100"));
             var movieRepositoryMock = new Mock<IMovieRepository>();
             movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(movie);
-            movieRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Movie> { movie });
+            movieRepositoryMock.Setup(r => r.GetAllByUserIdAsync(3)).ReturnsAsync(new List<Movie> { movie });
 
-            var byId = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1), CancellationToken.None);
-            var all = await new GetAllMoviesQueryHandler(movieRepositoryMock.Object).Handle(new GetAllMoviesQuery(), CancellationToken.None);
+            var byId = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1, 3), CancellationToken.None);
+            var all = await new GetAllMoviesQueryHandler(movieRepositoryMock.Object).Handle(new GetAllMoviesQuery(3), CancellationToken.None);
 
             foreach (var ratings in new[] { byId.ExternalRatings, all.Single().ExternalRatings })
             {
@@ -73,7 +73,7 @@ namespace MyMovieScore.UnitTests.Application.Queries
             var movieRepositoryMock = new Mock<IMovieRepository>();
             movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Movie("tt0111161", "The Shawshank Redemption"));
 
-            var result = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1), CancellationToken.None);
+            var result = await new GetMovieByIdQueryHandler(movieRepositoryMock.Object).Handle(new GetMovieByIdQuery(1, 3), CancellationToken.None);
 
             Assert.NotNull(result.ExternalRatings);
             Assert.Empty(result.ExternalRatings);
@@ -84,9 +84,33 @@ namespace MyMovieScore.UnitTests.Application.Queries
         {
             var handler = new GetMovieByIdQueryHandler(new Mock<IMovieRepository>().Object);
 
-            var result = await handler.Handle(new GetMovieByIdQuery(99), CancellationToken.None);
+            var result = await handler.Handle(new GetMovieByIdQuery(99, 3), CancellationToken.None);
 
             Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetMovieById_SomeoneElsesMovie_ReturnsNull()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            movieRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(Movie("tt0111161", "The Shawshank Redemption"));
+            var handler = new GetMovieByIdQueryHandler(movieRepositoryMock.Object);
+
+            var result = await handler.Handle(new GetMovieByIdQuery(1, 4), CancellationToken.None);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetAllMovies_AsksOnlyForTheUsersMovies()
+        {
+            var movieRepositoryMock = new Mock<IMovieRepository>();
+            movieRepositoryMock.Setup(r => r.GetAllByUserIdAsync(It.IsAny<int>())).ReturnsAsync(new List<Movie>());
+            var handler = new GetAllMoviesQueryHandler(movieRepositoryMock.Object);
+
+            await handler.Handle(new GetAllMoviesQuery(4), CancellationToken.None);
+
+            movieRepositoryMock.Verify(r => r.GetAllByUserIdAsync(4), Times.Once);
         }
 
         [Fact]

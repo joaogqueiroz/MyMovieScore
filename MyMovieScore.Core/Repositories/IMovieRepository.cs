@@ -9,7 +9,7 @@ namespace MyMovieScore.Core.Repositories
 {
     public interface IMovieRepository
     {
-        Task<List<Movie>> GetAllAsync();
+        Task<List<Movie>> GetAllByUserIdAsync(int userId);
         Task<Movie> GetByIdAsync(int id);
         Task AddAsync(Movie movie);
         Task UpdateAsync(Movie movie);

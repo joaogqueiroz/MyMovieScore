@@ -86,7 +86,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userId\": 0,\r\n  \"idIMDb\": \"string\",\r\n  \"watched\": true,\r\n  \"userScore\": 0\r\n}"
+							"raw": "{\r\n  \"idIMDb\": \"string\",\r\n  \"watched\": true,\r\n  \"userScore\": 0\r\n}"
 						},
 						"url": {
 							"raw": "https://localhost:7130/api/movie",

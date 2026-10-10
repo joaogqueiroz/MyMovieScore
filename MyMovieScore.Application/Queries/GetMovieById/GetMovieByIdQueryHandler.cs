@@ -21,7 +21,8 @@ namespace MyMovieScore.Application.Queries.GetMovieById
         public async Task<MovieViewModel> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
             var movie = await _movieRepository.GetByIdAsync(request.Id);
-            if (movie == null) return null;
+            // Someone else's movie is reported as not found, so its existence is not revealed
+            if (movie == null || movie.UserId != request.UserId) return null;
             var movieViewModel = new MovieViewModel
                 (
                 movie.Id,

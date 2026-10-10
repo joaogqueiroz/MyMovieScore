@@ -30,7 +30,7 @@ namespace MyMovieScore.Application.Commands.LoginUser
                 return null;
             }
             // if exists, return token 
-            var token = _authService.GenerateJwtToken(user.Email);
+            var token = _authService.GenerateJwtToken(user.Id, user.Email);
             return new LoginUserViewModel(user.Email, token);
         }
     }

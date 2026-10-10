@@ -10,9 +10,9 @@ namespace MyMovieScore.UnitTests.Application.Validators
         private readonly CreateMovieCommandValidator _createValidator = new CreateMovieCommandValidator();
         private readonly UpdateMovieCommandValidator _updateValidator = new UpdateMovieCommandValidator();
 
+        // UserId is not validated: the controller sets it from the access token
         private static CreateMovieCommand ValidCreateCommand() => new CreateMovieCommand
         {
-            UserId = 1,
             IdIMDb = "tt0111161",
             Watched = true,
             UserScore = 9.5f
@@ -24,17 +24,6 @@ namespace MyMovieScore.UnitTests.Application.Validators
             var result = _createValidator.TestValidate(ValidCreateCommand());
 
             result.ShouldNotHaveAnyValidationErrors();
-        }
-
-        [Fact]
-        public void CreateWithoutUserId_HasUserIdError()
-        {
-            var command = ValidCreateCommand();
-            command.UserId = 0;
-
-            var result = _createValidator.TestValidate(command);
-
-            result.ShouldHaveValidationErrorFor(c => c.UserId);
         }
 
         [Theory]
@@ -121,12 +110,10 @@ namespace MyMovieScore.UnitTests.Application.Validators
         public void MissingIds_UseTheirOwnMessages()
         {
             var create = ValidCreateCommand();
-            create.UserId = 0;
             create.IdIMDb = "";
 
             var result = _createValidator.TestValidate(create);
 
-            result.ShouldHaveValidationErrorFor(c => c.UserId).WithErrorMessage("Should have user Id");
             result.ShouldHaveValidationErrorFor(c => c.IdIMDb).WithErrorMessage("Should have IMDb ID");
             _updateValidator.TestValidate(new UpdateMovieCommand { Id = 0, Watched = true, UserScore = 5 })
                 .ShouldHaveValidationErrorFor(c => c.Id).WithErrorMessage("Should have ID");

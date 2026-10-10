@@ -35,7 +35,7 @@ namespace MyMovieScore.UnitTests.Application.Commands
 
             authServiceMock = new Mock<IAuthService>();
             authServiceMock.Setup(a => a.VerifyPassword(HashedPassword, It.IsAny<string>())).Returns(passwordMatches);
-            authServiceMock.Setup(a => a.GenerateJwtToken(Email)).Returns("token");
+            authServiceMock.Setup(a => a.GenerateJwtToken(It.IsAny<int>(), Email)).Returns("token");
 
             return new LoginUserCommandHandler(authServiceMock.Object, userRepositoryMock.Object);
         }
@@ -61,7 +61,7 @@ namespace MyMovieScore.UnitTests.Application.Commands
             var result = await handler.Handle(new LoginUserCommand { Email = Email, Password = "wrong" }, CancellationToken.None);
 
             Assert.Null(result);
-            authServiceMock.Verify(a => a.GenerateJwtToken(It.IsAny<string>()), Times.Never);
+            authServiceMock.Verify(a => a.GenerateJwtToken(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]

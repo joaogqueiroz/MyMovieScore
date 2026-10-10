@@ -7,6 +7,7 @@ using MyMovieScore.Application.Commands.DeleteMovie;
 using MyMovieScore.Application.Commands.UpdateMovie;
 using MyMovieScore.Application.Queries.GetAllMovies;
 using MyMovieScore.Application.Queries.GetMovieById;
+using System.Security.Claims;
 
 namespace MyMovieScore.Api.Controllers
 {
@@ -21,10 +22,15 @@ namespace MyMovieScore.Api.Controllers
             _mediator = mediator;
         }
 
+        // The user always comes from the access token (the "sub" claim), never from the request
+        private int? CurrentUserId =>
+            int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value, out var id) ? id : null;
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var query = new GetAllMoviesQuery();
+            if (CurrentUserId is not int userId) return Unauthorized();
+            var query = new GetAllMoviesQuery(userId);
             var getAllMovies = await _mediator.Send(query);
 
             return Ok(getAllMovies);
@@ -33,7 +39,8 @@ namespace MyMovieScore.Api.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var query = new GetMovieByIdQuery(Id);
+            if (CurrentUserId is not int userId) return Unauthorized();
+            var query = new GetMovieByIdQuery(Id, userId);
             var movie = await _mediator.Send(query);
             if (movie == null)
             {
@@ -45,6 +52,8 @@ namespace MyMovieScore.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateMovieCommand command)
         {
+            if (CurrentUserId is not int userId) return Unauthorized();
+            command.UserId = userId;
             var id = await _mediator.Send(command);
             if (id == null)
             {
@@ -55,6 +64,8 @@ namespace MyMovieScore.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, [FromBody] UpdateMovieCommand command)
         {
+            if (CurrentUserId is not int userId) return Unauthorized();
+            command.UserId = userId;
             var found = await _mediator.Send(command);
             if (!found)
             {
@@ -65,7 +76,8 @@ namespace MyMovieScore.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int Id)
         {
-            var command = new DeleteMovieCommand(Id);
+            if (CurrentUserId is not int userId) return Unauthorized();
+            var command = new DeleteMovieCommand(Id, userId);
             var found = await _mediator.Send(command);
             if (!found)
             {

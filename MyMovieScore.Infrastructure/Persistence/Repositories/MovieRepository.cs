@@ -16,9 +16,9 @@ namespace MyMovieScore.Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<Movie>> GetAllAsync()
+        public async Task<List<Movie>> GetAllByUserIdAsync(int userId)
         {
-            return await _dbContext.Movies.Include(m => m.ExternalRatings).ToListAsync();
+            return await _dbContext.Movies.Include(m => m.ExternalRatings).Where(m => m.UserId == userId).ToListAsync();
         }
 
         public async Task AddAsync(Movie movie)

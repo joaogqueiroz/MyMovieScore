@@ -18,7 +18,8 @@ namespace MyMovieScore.Application.Commands.DeleteMovie
         public async Task<bool> Handle(DeleteMovieCommand request, CancellationToken cancellationToken)
         {
             var movie = await _movieRepository.GetByIdAsync(request.Id);
-            if (movie == null)
+            // Someone else's movie is reported as not found, so its existence is not revealed
+            if (movie == null || movie.UserId != request.UserId)
             {
                 return false;
             }

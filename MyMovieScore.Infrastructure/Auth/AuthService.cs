@@ -21,13 +21,15 @@ namespace MyMovieScore.Infrastructure.Auth
         {
             _jwtOptions = jwtOptions.Value;
         }
-        public string GenerateJwtToken(string email)
+        public string GenerateJwtToken(int userId, string email)
         {
             var securetyKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
             var credentials = new SigningCredentials(securetyKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
       {
+          // The movie endpoints read the user from here, never from the request body
+          new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
           new Claim("userName", email),
        };
             var token = new JwtSecurityToken(

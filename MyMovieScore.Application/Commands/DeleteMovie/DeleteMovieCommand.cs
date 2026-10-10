@@ -9,11 +9,13 @@ namespace MyMovieScore.Application.Commands.DeleteMovie
 {
     public class DeleteMovieCommand : IRequest<bool>
     {
-        public DeleteMovieCommand(int id)
+        public DeleteMovieCommand(int id, int userId)
         {
             Id = id;
+            UserId = userId;
         }
 
         public int Id { get; set; }
+        public int UserId { get; set; }
     }
 }

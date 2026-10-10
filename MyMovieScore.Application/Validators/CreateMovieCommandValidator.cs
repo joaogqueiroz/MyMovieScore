@@ -12,9 +12,6 @@ namespace MyMovieScore.Application.Validators
     {
         public CreateMovieCommandValidator()
         {
-            RuleFor(m => m.UserId)
-                .NotEmpty()
-                .WithMessage("Should have user Id");
             
             RuleFor(m => m.IdIMDb)
                 .NotEmpty()

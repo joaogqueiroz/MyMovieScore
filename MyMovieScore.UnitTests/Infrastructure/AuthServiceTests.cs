@@ -55,11 +55,12 @@ namespace MyMovieScore.UnitTests.Infrastructure
         {
             var before = DateTime.UtcNow;
 
-            var token = new JwtSecurityTokenHandler().ReadJwtToken(CreateService().GenerateJwtToken("user@test.com"));
+            var token = new JwtSecurityTokenHandler().ReadJwtToken(CreateService().GenerateJwtToken(42, "user@test.com"));
 
             Assert.Equal("MyMovieScore", token.Issuer);
             Assert.Contains("ClientMyMovieScore", token.Audiences);
             Assert.Equal("user@test.com", token.Claims.Single(c => c.Type == "userName").Value);
+            Assert.Equal("42", token.Subject);
             Assert.InRange(token.ValidTo, before.AddHours(2).AddMinutes(-1), before.AddHours(2).AddMinutes(1));
         }
     }

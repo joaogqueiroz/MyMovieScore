@@ -8,7 +8,7 @@ namespace MyMovieScore.Core.Services
 {
     public interface IAuthService
     {
-        string GenerateJwtToken(string email);
+        string GenerateJwtToken(int userId, string email);
         string HashPassword(string password);
         bool VerifyPassword(string hashedPassword, string password);
     }

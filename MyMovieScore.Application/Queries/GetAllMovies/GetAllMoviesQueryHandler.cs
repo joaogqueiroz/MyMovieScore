@@ -19,7 +19,7 @@ namespace MyMovieScore.Application.Queries.GetAllMovies
         }
         public async Task<List<MovieViewModel>> Handle(GetAllMoviesQuery request, CancellationToken cancellationToken)
         {
-            var movies = await _movieRepository.GetAllAsync();
+            var movies = await _movieRepository.GetAllByUserIdAsync(request.UserId);
             var movieViewModel = movies
                 .Select(m => new MovieViewModel
                 (

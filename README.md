@@ -21,7 +21,7 @@ flowchart TB
 ```
 
 - **CQRS:** every write is a command (`CreateUser`, `LoginUser`, `CreateMovie`, `UpdateMovie`, `DeleteMovie`) and every read is a query, each with its own handler.
-- **Auth:** JWT bearer tokens; the movie endpoints require a token.
+- **Auth:** JWT bearer tokens; the movie endpoints require a token. The user comes from the token, so each person only lists, reads, changes and deletes the movies in their own list; someone else's movie answers `404`, as if it did not exist.
 - **External data:** `IMDbExternalService` fetches movie details and ratings from OMDb when a movie is created.
 - **Migrations:** pending EF Core migrations are applied automatically on startup.
 
@@ -64,7 +64,7 @@ sequenceDiagram
 | POST | `/api/user` | | `{ "email", "password", "name" }` |
 | POST | `/api/user/login` | | `{ "email", "password" }` → returns a JWT |
 | GET | `/api/user/{id}` | | |
-| POST | `/api/movie` | token | `{ "userId", "idIMDb", "watched", "userScore" }`, e.g. `"idIMDb": "tt0111161"` |
+| POST | `/api/movie` | token | `{ "idIMDb", "watched", "userScore" }`, e.g. `"idIMDb": "tt0111161"` |
 | GET | `/api/movie` | token | |
 | GET | `/api/movie/{id}` | token | |
 | PUT | `/api/movie` | token | `{ "id", "watched", "userScore" }` |

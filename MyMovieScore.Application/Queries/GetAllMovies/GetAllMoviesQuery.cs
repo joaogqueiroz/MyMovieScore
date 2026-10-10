@@ -10,5 +10,11 @@ namespace MyMovieScore.Application.Queries.GetAllMovies
 {
     public class GetAllMoviesQuery : IRequest<List<MovieViewModel>>
     {
+        public GetAllMoviesQuery(int userId)
+        {
+            UserId = userId;
+        }
+
+        public int UserId { get; set; }
     }
 }
